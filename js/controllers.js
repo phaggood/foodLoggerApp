@@ -1,5 +1,9 @@
 angular.module('foodlogapp.controllers', [])
 
+    .controller('SplashController', function($scope) {
+
+    })
+
 .controller('DayChartController', function($scope, ChartService) {
         var chartData = ChartService.dayValues();
         $scope.data = chartData.values.toString();

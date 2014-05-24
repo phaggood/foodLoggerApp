@@ -1,17 +1,96 @@
 angular.module('foodlogapp.services', [])
 
-.factory('EntryService', function() {
+    .factory('AuthService', ["DreamFactory","$http","$q", function(DreamFactory, $http, $q) {
+        var currentUser = null;
+        var authStatusMessage = "";
+
+        var clearActiveUser = function() {
+            currentUser = null;
+        };
+
+        var initActiveUser = function(usr) {
+            currentUser = usr;
+        };
+
         return {
-            saveEntry : function(entry) {
-                return "Today";
 
+            activeUser: function(){
+                return currentUser;
             },
-            getntry : function(id) {
-                return "This Month";
 
+            unsetActiveUser: function() {
+                clearActiveUser();
+            },
+
+            setActiveUser: function(user) {
+                initActiveUser(user);
+            },
+
+            // Define custom getRecords service
+            login: function(creds) {
+                console.log("Connecting " + creds.email + " , " + creds.password);
+                // create a promise
+                var deferred = $q.defer();
+
+                // Call DreamFactory database service with credentials
+                DreamFactory.api.user.login({"body":{"email":creds.email, "password":creds.password}},
+
+                    // Success function
+                    function(data) {
+                        deferred.resolve(data);
+                    },
+                    function(error){
+                        deferred.reject(error);
+                    }
+                );
+                return deferred.promise;
+            },
+
+            // fluser@spieleware.com
+            logout: function() {
+                clearActiveUser();
+                DreamFactory.api.user.logout();
+                $http.defaults.headers.common['X-DreamFactory-Session-Token'] = "";
             }
         }
-    })
+    }])
+
+
+// https://github.com/dreamfactorysoftware/angular-dreamfactory
+//Define a custom service
+.factory('EntryService', ['$q', 'DreamFactory', function($q, DreamFactory) {
+
+        return {
+            saveEntry: function(entry){
+                var deferred = $q.defer();
+
+                var request = {
+                    table_name: 'foodlogentries',
+                    body: entry
+                };
+
+                DreamFactory.api.db.saveRecord(request,
+
+                    // Success function
+                    function(data) {
+
+                        // Handle promise
+                        deferred.resolve(data);
+                    },
+
+                    // Error function
+                    function(error) {
+
+                        // Handle Promise
+                        deferred.reject(error);
+                    }
+                );
+
+
+            }
+
+    }
+}])
 
 .factory('ChartService', function() {
         // Might use a resource here that returns a JSON array
@@ -36,7 +115,7 @@ angular.module('foodlogapp.services', [])
 
         ];
 
-        // this will come from prefrences,
+       // this will come from prefrences,
         var daypct = {};
         daypct.salt = 2300;
         daypct.carbs = 150;
@@ -50,7 +129,7 @@ angular.module('foodlogapp.services', [])
 
         var monthlyPct = function(val,target){
             return ((val/(target*30))*100).toFixed(2);
-        }
+        };
 
         // loop through entries for all matching comparision function
         var dayData = function(cmpFn) {
@@ -120,6 +199,7 @@ angular.module('foodlogapp.services', [])
             return chartData;
         };
 
+
         return {
             dayTitle : function() {
                 return "Today";
@@ -130,12 +210,14 @@ angular.module('foodlogapp.services', [])
 
             },
             dayValues: function() {
-                return dayData();
+                return []; //dayData();
 
             },
             monthValues: function() {
-                return monthData();
+                return []; //monthData();
             }
         }
-    })
-;
+ });
+
+
+

@@ -5,33 +5,13 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'foodlogapp.controllers' is found in controllers.js
-angular.module('foodlogapp', ['ionic', 'foodlogapp.services', 'foodlogapp.controllers'])
+angular.module('foodlogapp', ['ionic','ngDreamFactory', 'foodlogapp.services', 'foodlogapp.controllers'])
 
-.directive('bars', function ($parse) {
-    return {
-        restrict: 'E',
-        replace: true,
-        template: '<div id="chart"></div>',
-        link: function (scope, element, attrs) {
-            var data = attrs.data.split(','),
-                chart = d3.select('#chart')
-                    .append("div").attr("class", "chart")
-                    .selectAll('div')
-                    .data(data).enter()
-                    .append("div")
-                    .transition().ease("elastic")
-                    .style("width", function(d) { return d + "%"; })
-                    .text(function(d) { return d + "%"; });
-        }
-    };
-})
+.constant('DSP_URL', 'http://ec2-23-22-183-175.compute-1.amazonaws.com/')
+.constant('DSP_API_KEY', 'foodlogger')
 
     .config(function($stateProvider, $urlRouterProvider) {
 
-        // Ionic uses AngularUI Router which uses the concept of states
-        // Learn more here: https://github.com/angular-ui/ui-router
-        // Set up the various states which the app can be in.
-        // Each state's controller can be found in controllers.js
         $stateProvider
 
             // splash page
@@ -40,6 +20,14 @@ angular.module('foodlogapp', ['ionic', 'foodlogapp.services', 'foodlogapp.contro
                 templateUrl: "templates/splash.html"
             })
 
+            // authenticate user to app
+
+            .state('login', {
+                url: "/login",
+                templateUrl: "templates/login.html",
+                controller: 'AuthCtrl'
+            })
+            // tab pages
 
             // setup an abstract state for the tabs directive
             .state('tab', {
@@ -52,8 +40,7 @@ angular.module('foodlogapp', ['ionic', 'foodlogapp.services', 'foodlogapp.contro
                 url: '/day',
                 views: {
                     'day-tab': {
-                        templateUrl: 'templates/day.html',
-                        controller: 'DayChartController'
+                        templateUrl: 'templates/day.html'
                     }
                 }
             })
@@ -62,8 +49,7 @@ angular.module('foodlogapp', ['ionic', 'foodlogapp.services', 'foodlogapp.contro
                 url: '/month',
                 views: {
                     'month-tab': {
-                        templateUrl: 'templates/month.html',
-                        controller: 'MonthChartController'
+                        templateUrl: 'templates/month.html'
                     }
                 }
             })
@@ -72,9 +58,7 @@ angular.module('foodlogapp', ['ionic', 'foodlogapp.services', 'foodlogapp.contro
                 url: '/new',
                 views: {
                     'new-tab': {
-                        templateUrl: 'templates/new.html',
-                        controller: 'NewEntryController'
-
+                        templateUrl: 'templates/new.html'
                     }
                 }
             })

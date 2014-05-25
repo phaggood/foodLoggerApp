@@ -3,33 +3,35 @@
 -->
 <ion-view title="New Entry">
   <ion-content has-tabs="false">
-
-      <h3>Salt</h3>
+      <form ng-submit="saveEntry()">
+      <span><h4>Salt: {{entry.salt}}</h4></span>
       <div class="range">
           <i class="icon ion-ios7-minus-outline"></i>
-          <input type="range" name="volume" min="0" max="{{entry.saltmax}}" value="{{entry.salt}}">
+          <input type="range" name="volume" min="0" max="{{entry.saltmax}}" value="{{entry.salt}}" ng-model="entry.salt">
           <i class="ion-ios7-plus-outline"></i>
       </div>
 
-      <h3>Carbs</h3>
+      <span><h4>Carbs: {{entry.carbs}}</h4></span>
       <div class="range">
           <i class="icon ion-ios7-minus-outline"></i>
-          <input type="range" name="volume" min="0" max="{{entry.carbsmax}}" value="{{entry.carbs}}">
+          <input type="range" name="volume" min="0" max="{{entry.carbsmax}}" value="{{entry.carbs}}" ng-model="entry.carbs">
           <i class="ion-ios7-plus-outline"></i>
       </div>
 
-      <h3>Suga</h3>
-      <div class="range">
+          <span><h4>Sugar: {{entry.sugar}}</h4></span>
+          <div class="range">
           <i class="icon ion-ios7-minus-outline"></i>
-          <input type="range" name="volume" min="0" max="{{entry.sugarmax}}" value="{{entry.sugar}}">
-          <i class="ion-ios7-plus-outline"></i>
-      </div>
-      <h3>Calories</h3>
-      <div class="range">
-          <i class="icon ion-ios7-minus-outline"></i>
-          <input type="range" name="volume" min="0" max="{{entry.caloriemax}}" value="{{entry.calories}}">
+          <input type="range" name="volume" min="0" max="{{entry.sugarmax}}" value="{{entry.sugar}}" ng-model="entry.sugar">
           <i class="ion-ios7-plus-outline"></i>
       </div>
 
+          <span><h4>Calories: {{entry.calories}}</h4></span>
+          <div class="range">
+          <i class="icon ion-ios7-minus-outline"></i>
+          <input type="range" name="volume" min="0" max="{{entry.caloriemax}}" value="{{entry.calories}}" ng-model="entry.calories">
+          <i class="ion-ios7-plus-outline"></i>
+      </div>
+      <button type="submit" class="button button-block button-positive">Save</button>
+      </form>
   </ion-content>
 </ion-view>

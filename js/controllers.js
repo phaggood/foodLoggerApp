@@ -49,65 +49,89 @@ angular.module('foodlogapp.controllers', [])
             $scope.activeUser = AuthService.logout();
             $rootScope.$broadcast('user:logout');
         }
-
 })
 
-
-
-.controller('DayChartController', function($scope, EntryService) {
+    .controller('DayChartController', function($scope, EntryService,$stateParams) {
         var chartData = [];
-        $scope.chartdata = "";
-    var dNum = $routeParams.dayNum ? $routeParams.dayNum : new Date().getDay();
+        //$scope.chartdata = "";
+        var dNum = $stateParams.dayNum ? $stateParams.dayNum : new Date().getDay();
 
-        //call custom service built using DreamFactory that returns a promise
+        $scope.config = {
+            title: 'Percent of RDA',
+            tooltips: true,
+            labels: true,
+            mouseover: function () {
+            },
+            mouseout: function () {
+            },
+            click: function () {
+            },
+            legend: {
+                display: true,
+                //could be 'left, right'
+                position: 'right'
+            }
+        };
+
+        $scope.data = {
+            //series: ['Salt', 'Sugar', 'Carbs', 'Calories'],
+            data: [
+                {
+                    x: "Salt",
+                    y: [40],
+                    tooltip: "this is tooltip"
+                },
+                {
+                    x: "Sugar",
+                    y: [68]
+                },
+                {
+                    x: "Carbs",
+                    y: [98]
+                },
+                {
+                    x: "Calories",
+                    y: [87]
+                }
+            ]
+        };
+
+
+/*        //call custom service built using DreamFactory that returns a promise
         EntryService.getRecords('foodlogentries').then(
             // Success function
             function(daypct) {
-                    console.log(daypct);
-                    chartData.push(daypct.salt);
-                    chartData.push(daypct.carbs);
-                    chartData.push(daypct.sugar);
-                    chartData.push( daypct.calories);
-                    $scope.chartdata = chartData.toString();
+                console.log(daypct);
+                chartData.push(daypct.salt);
+                chartData.push(daypct.carbs);
+                chartData.push(daypct.sugar);
+                chartData.push( daypct.calories);
+                $scope.chartdata = chartData.toString();
             },
 
             // Error function
             function(reject) {
-                    $scope.chartdata = "";
-                    // Handle error
-        });
-
-
-})
-
-.controller('D3ChartController', ['$scope','Chartservice', function($scope, ChartService){
-        $scope.greeting = "Daily nutritional intake";
-        $scope.d3Data = [];
-       var data = ChartService.getData().then(
-            $scope.d3Data = [
-                {name: "Salt", score:data.salt},
-                {name: "Sugar", score:data.sugar},
-                {name: "Carbs", score: data.carbs},
-                {name: "Calories", score: data.calories}
-        ]);
-
-}])
+                $scope.chartdata = "";
+                // Handle error
+            });*/
+    })
 
 .controller('NewEntryController', function($scope) { // $state,EntryService, DreamFactory) {
 
         $scope.entry = {};
         var daypct = {};
+        // these should be in prefs
         daypct.salt = 2300;
         daypct.carbs = 150;
         daypct.sugar = 25;
         daypct.calories = 2300;
-        $scope.entry.caloriemax = daypct.salt;
+        // set daily limits
+        $scope.entry.saltmax = daypct.salt;
         $scope.entry.carbsmax = daypct.carbs;
         $scope.entry.sugarmax = daypct.sugar;
         $scope.entry.caloriemax = daypct.calories;
 
-
-        $scope.saveRecord = function() {
+        $scope.saveEntry = function() {
             EntryService.saveEntry($scope.entry).then(
                 // Success function
                 function(result) {
@@ -120,12 +144,8 @@ angular.module('foodlogapp.controllers', [])
 
                     console.log("failed saving entry");
                 }
-
             )
         }
-
-
-
 })
 
 

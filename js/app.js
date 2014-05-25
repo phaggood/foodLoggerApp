@@ -5,10 +5,19 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'foodlogapp.controllers' is found in controllers.js
-angular.module('foodlogapp', ['ionic','ngDreamFactory', 'foodlogapp.services', 'foodlogapp.controllers'])
+angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlogapp.services', 'foodlogapp.controllers'])
 
 .constant('DSP_URL', 'http://ec2-23-22-183-175.compute-1.amazonaws.com/')
 .constant('DSP_API_KEY', 'foodlogger')
+
+    .directive('barChart', ['d3Service', function(d3Service) {
+        return {
+            restrict: 'EA',
+            // directive code
+        }
+    }])
+
+
 
     .config(function($stateProvider, $urlRouterProvider) {
 
@@ -40,7 +49,8 @@ angular.module('foodlogapp', ['ionic','ngDreamFactory', 'foodlogapp.services', '
                 url: '/day',
                 views: {
                     'day-tab': {
-                        templateUrl: 'templates/day.html'
+                        templateUrl: 'templates/day.html',
+                        controller: "DayChartController"
                     }
                 }
             })

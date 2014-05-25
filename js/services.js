@@ -55,7 +55,6 @@ angular.module('foodlogapp.services', [])
         }
     }])
 
-
 // https://github.com/dreamfactorysoftware/angular-dreamfactory
 //Define a custom service
 .factory('EntryService', ['$q', 'DreamFactory', function($q, DreamFactory) {

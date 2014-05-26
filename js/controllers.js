@@ -34,12 +34,12 @@ angular.module('foodlogapp.controllers', [])
         $scope.login = function(){
             AuthService.login($scope.creds).then(
                 function(result) {
-                    AuthService.setActiveUser(result.display_name);
-                    $http.defaults.headers.common['X-DreamFactory-Session-Token'] = result.ticket;
+                    $http.defaults.headers.common['X-DreamFactory-Session-Token'] = result.session_id;
+                    AuthService.initActiveUser(result);
                     $state.go('tab.day');
                 },
                 function(reject) {
-                    AuthService.unsetActiveUser();
+                    AuthService.clearActiveUser();
                     $http.defaults.headers.common['X-DreamFactory-Session-Token'] = ""
                 }
             )
@@ -47,6 +47,7 @@ angular.module('foodlogapp.controllers', [])
 
         $scope.logout = function(){
             $scope.activeUser = AuthService.logout();
+            AuthService.clearActiveUser();
             $rootScope.$broadcast('user:logout');
         }
 })
@@ -116,15 +117,15 @@ angular.module('foodlogapp.controllers', [])
             });*/
     })
 
-.controller('NewEntryController', function($scope) { // $state,EntryService, DreamFactory) {
+.controller('NewEntryController', function($scope,AuthService,EntryService) { // $state,EntryService, DreamFactory) {
 
         $scope.entry = {};
         var daypct = {};
         // these should be in prefs
-        daypct.salt = 2300;
-        daypct.carbs = 150;
-        daypct.sugar = 25;
-        daypct.calories = 2300;
+        daypct.salt = 2300;  //mg
+        daypct.carbs = 150;  //g
+        daypct.sugar = 36; // g
+        daypct.calories = 2500; // units
         // set daily limits
         $scope.entry.saltmax = daypct.salt;
         $scope.entry.carbsmax = daypct.carbs;
@@ -132,16 +133,15 @@ angular.module('foodlogapp.controllers', [])
         $scope.entry.caloriemax = daypct.calories;
 
         $scope.saveEntry = function() {
+            $scope.entry.session_id = AuthService.getActiveUser().sessionId;
             EntryService.saveEntry($scope.entry).then(
                 // Success function
                 function(result) {
-
-                    console.log("created id " +data.id );
+                    console.log("created id " +result.id );
                 },
 
                 // Error function
                 function(reject) {
-
                     console.log("failed saving entry");
                 }
             )

@@ -4,14 +4,14 @@
 <ion-view title="New Entry">
   <ion-content has-tabs="false">
       <form ng-submit="saveEntry()">
-      <span><h4>Salt: {{entry.salt}}</h4></span>
+      <span><h4>Salt: {{entry.salt}} mg</h4></span>
       <div class="range">
           <i class="icon ion-ios7-minus-outline"></i>
           <input type="range" name="volume" min="0" max="{{entry.saltmax}}" value="{{entry.salt}}" ng-model="entry.salt">
           <i class="ion-ios7-plus-outline"></i>
       </div>
 
-      <span><h4>Carbs: {{entry.carbs}}</h4></span>
+      <span><h4>Carbs: {{entry.carbs}} g</h4></span>
       <div class="range">
           <i class="icon ion-ios7-minus-outline"></i>
           <input type="range" name="volume" min="0" max="{{entry.carbsmax}}" value="{{entry.carbs}}" ng-model="entry.carbs">

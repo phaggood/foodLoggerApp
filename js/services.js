@@ -1,29 +1,29 @@
 angular.module('foodlogapp.services', [])
 
     .factory('AuthService', ["DreamFactory","$http","$q", function(DreamFactory, $http, $q) {
-        var currentUser = null;
-        var authStatusMessage = "";
 
-        var clearActiveUser = function() {
-            currentUser = null;
-        };
-
-        var initActiveUser = function(usr) {
-            currentUser = usr;
-        };
+        var activeUser = {};
+        activeUser.sessionId = "";
+        activeUser.userId = -1;
+        activeUser.name = "";
 
         return {
 
-            activeUser: function(){
-                return currentUser;
+            initActiveUser :  function(usr) {
+                console.log("init " + usr.session_id);
+                activeUser.sessionId = usr.session_id;
+                activeUser.userId = usr.id;
+                activeUser.name = usr.display_name;
             },
 
-            unsetActiveUser: function() {
-                clearActiveUser();
+            clearActiveUser: function() {
+                activeUser.sessionId = "";
+                activeUser.userId = -1;
+                activeUser.name = "";
             },
 
-            setActiveUser: function(user) {
-                initActiveUser(user);
+            getActiveUser : function() {
+                return activeUser;
             },
 
             // Define custom getRecords service
@@ -63,12 +63,23 @@ angular.module('foodlogapp.services', [])
             saveEntry: function(entry){
                 var deferred = $q.defer();
 
+                var record = {
+                    "record": [
+                    {
+                        "userid": entry.sessionId,
+                        "salt": entry.salt,
+                        "sugar":entry.sugar,
+                        "carbs":entry.carbs,
+                        "calories":entry.calories
+                    }
+                ]
+                }
                 var request = {
                     table_name: 'foodlogentries',
                     body: entry
                 };
 
-                DreamFactory.api.db.saveRecord(request,
+                DreamFactory.api.db.createRecords(request,
 
                     // Success function
                     function(data) {
@@ -84,8 +95,7 @@ angular.module('foodlogapp.services', [])
                         deferred.reject(error);
                     }
                 );
-
-
+                return deferred.promise;
             }
 
     }

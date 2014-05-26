@@ -12,7 +12,7 @@ angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlo
 
     .directive('barChart', ['d3Service', function(d3Service) {
         return {
-            restrict: 'EA',
+            restrict: 'EA'
             // directive code
         }
     }])
@@ -68,7 +68,8 @@ angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlo
                 url: '/new',
                 views: {
                     'new-tab': {
-                        templateUrl: 'templates/new.html'
+                        templateUrl: 'templates/new.html',
+                        controller : "NewEntryController"
                     }
                 }
             })

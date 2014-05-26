@@ -118,7 +118,7 @@ angular.module('foodlogapp.controllers', [])
             });*/
     })
 
-.controller('NewEntryController', function($scope,AuthService,EntryService) { // $state,EntryService, DreamFactory) {
+.controller('NewEntryController', function($scope,AuthService,EntryService,$state) { // $state,EntryService, DreamFactory) {
 
         $scope.entry = {};
         var daypct = {};
@@ -139,6 +139,7 @@ angular.module('foodlogapp.controllers', [])
                 // Success function
                 function(result) {
                     console.log("created id " +result.id );
+                    $state.go('tab.day');
                 },
 
                 // Error function

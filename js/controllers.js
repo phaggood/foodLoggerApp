@@ -52,8 +52,9 @@ angular.module('foodlogapp.controllers', [])
         }
 })
 
-    .controller('DayChartController', function($scope, EntryService,$stateParams) {
+    .controller('DayChartController', function($scope, AuthService, EntryService,$stateParams) {
         var chartData = [];
+        $scope.currentUser = AuthService.getActiveUser().name;
         //$scope.chartdata = "";
         var dNum = $stateParams.dayNum ? $stateParams.dayNum : new Date().getDay();
 

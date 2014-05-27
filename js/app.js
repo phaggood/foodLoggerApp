@@ -9,6 +9,7 @@ angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlo
 
 .constant('DSP_URL', 'http://ec2-23-22-183-175.compute-1.amazonaws.com/')
 .constant('DSP_API_KEY', 'foodlogger')
+.constant('TABLE_NAME', 'foodlogentries')
 
     .directive('barChart', ['d3Service', function(d3Service) {
         return {
@@ -46,21 +47,12 @@ angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlo
                 templateUrl: "templates/tabs.html"
             })
 
-            .state('tab.day', {
-                url: '/day',
+            .state('tab.chart', {
+                url: '/chart/:chartType/:num',
                 views: {
-                    'day-tab': {
+                    'chart-tab': {
                         templateUrl: 'templates/day.html',
-                        controller: "DayChartController"
-                    }
-                }
-            })
-
-            .state('tab.month', {
-                url: '/month',
-                views: {
-                    'month-tab': {
-                        templateUrl: 'templates/month.html'
+                        controller: "ChartController"
                     }
                 }
             })

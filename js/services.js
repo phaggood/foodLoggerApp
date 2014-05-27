@@ -56,13 +56,50 @@ angular.module('foodlogapp.services', [])
     }])
 
 // https://github.com/dreamfactorysoftware/angular-dreamfactory
-//Define a custom service
+// Service functions to save and retrieve from Dreamfactory
 .factory('EntryService', ['$q', 'DreamFactory', function($q, DreamFactory) {
 
+        var getFilter = function(chartType, num){
+            var filterText = "";
+
+            // add new chart types about here
+            switch (chartType) {
+                case "MONTH":
+                    filterText = "MONTH(entrydate) = " + num;
+                    break;
+                case "DAY":
+                    filterText = "DAY(entrydate) = " + num;
+                    break;
+                default:
+                    filterText = "DAY(entrydate) = " + num;
+                    break;
+            }
+            return filterText;
+        };
+
         return {
+            getData: function(chartType, num) {
+                var filter = getFilter(chartType, num);
+                var deferred = $q.defer();
+                var request = {
+                    table_name: 'foodlogentries',
+                    filter: filter
+                };
+                DreamFactory.api.db.getRecords(request,
+                    function(data) {
+                        // Handle promise
+                        deferred.resolve(data);
+                    },
+                    function(error){
+                        // Handle Promise
+                        deferred.reject(error);
+                    }
+                );
+                return deferred.promise;
+            },
+
             saveEntry: function(entry){
                 var deferred = $q.defer();
-
                 var record = {
                     "record": [
                     {
@@ -73,7 +110,8 @@ angular.module('foodlogapp.services', [])
                         "calories":entry.calories
                     }
                 ]
-                }
+                };
+
                 var request = {
                     table_name: 'foodlogentries',
                     body: entry
@@ -83,25 +121,51 @@ angular.module('foodlogapp.services', [])
 
                     // Success function
                     function(data) {
-
                         // Handle promise
                         deferred.resolve(data);
                     },
 
                     // Error function
                     function(error) {
-
                         // Handle Promise
                         deferred.reject(error);
                     }
                 );
                 return deferred.promise;
             }
-
     }
 }])
 
+
 .factory('ChartService', function() {
+
+        // add all retrieved records of 'type'
+        var sumRecord = function(records,type) {
+            var typeSum = 0;
+            records.forEach(function(record) {
+                if (record[type] > 0 ){
+                    typeSum += record[type];
+                };
+            });
+            return typeSum;
+        };
+
+        return{
+
+            toChartData : function (chartType,records) {
+                var result =
+                {
+                    data: [
+                        { x: chartType, y: [sumRecord(records, 'salt'),sumRecord(records, 'sugar'),sumRecord(records, 'carbs'),sumRecord(records, 'calories') ] }
+                    ]
+                };
+                return result;
+            }
+        }
+
+})
+
+/*.factory('ChartService', function() {
         // Might use a resource here that returns a JSON array
 
         // Some fake testing data
@@ -226,7 +290,9 @@ angular.module('foodlogapp.services', [])
                 return []; //monthData();
             }
         }
- });
+ })*/
+
+;
 
 
 

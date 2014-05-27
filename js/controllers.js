@@ -1,6 +1,6 @@
 angular.module('foodlogapp.controllers', [])
 
-.controller('SplashController',["$scope","$state","DreamFactory","$timeout", function($scope, $state,DreamFactory,$timeout) {
+    .controller('SplashController',["$scope","$state","DreamFactory","$timeout", function($scope, $state,DreamFactory,$timeout) {
         var tCount = 0;
         $scope.initFail = false;
 
@@ -21,9 +21,9 @@ angular.module('foodlogapp.controllers', [])
 
         init();
 
-}])
+    }])
 
-.controller('AuthCtrl', function($scope, AuthService, $state, $http ){
+    .controller('AuthCtrl', function($scope, AuthService, $state, $http ){
 
         // model for login credentials
         $scope.creds = {
@@ -36,7 +36,7 @@ angular.module('foodlogapp.controllers', [])
                 function(result) {
                     $http.defaults.headers.common['X-DreamFactory-Session-Token'] = result.session_id;
                     AuthService.initActiveUser(result);
-                    $state.go('tab.day');
+                    $state.go('tab.chart',{chartType:"DAY"});
                 },
                 function(reject) {
                     AuthService.clearActiveUser();
@@ -50,13 +50,33 @@ angular.module('foodlogapp.controllers', [])
             AuthService.clearActiveUser();
             $rootScope.$broadcast('user:logout');
         }
-})
+    })
 
-    .controller('DayChartController', function($scope, AuthService, EntryService,$stateParams) {
-        var chartData = [];
-        $scope.currentUser = AuthService.getActiveUser().name;
-        //$scope.chartdata = "";
-        var dNum = $stateParams.dayNum ? $stateParams.dayNum : new Date().getDay();
+    .controller('ChartController', function($scope, AuthService, EntryService,ChartService,$stateParams) {
+        // d3 data object
+        /*$scope.config = {
+            title: 'Daily',
+            tooltips: true,
+            labels: false,
+            mouseover: function() {},
+            mouseout: function() {},
+            click: function() {},
+            legend: {
+                display: true,
+                //could be 'left, right'
+                position: 'right'
+            }
+        };
+
+        $scope.data = {
+            series: ['Salt', 'Sugar', 'Calories', 'Carbs'],
+            data: [{
+                x: "Today",
+                y: [30, 60,97,44 ],
+                tooltip: "this is tooltip"
+            }]
+        };
+             */
 
         $scope.config = {
             title: 'Percent of RDA',
@@ -76,49 +96,44 @@ angular.module('foodlogapp.controllers', [])
         };
 
         $scope.data = {
-            //series: ['Salt', 'Sugar', 'Carbs', 'Calories'],
-            data: [
-                {
-                    x: "Salt",
-                    y: [40],
-                    tooltip: "this is tooltip"
-                },
-                {
-                    x: "Sugar",
-                    y: [68]
-                },
-                {
-                    x: "Carbs",
-                    y: [98]
-                },
-                {
-                    x: "Calories",
-                    y: [87]
-                }
-            ]
+            series: ['Salt', 'Sugar', 'Carbs', 'Calories'],
+            data:[]
         };
+        $scope.currentUser = AuthService.getActiveUser().name;
 
+        // init curent month and day numbers from params
+        var chartType = $stateParams.chartType ? $stateParams.chartType : "DAY";
+        var num = 0;
 
-/*        //call custom service built using DreamFactory that returns a promise
-        EntryService.getRecords('foodlogentries').then(
-            // Success function
-            function(daypct) {
-                console.log(daypct);
-                chartData.push(daypct.salt);
-                chartData.push(daypct.carbs);
-                chartData.push(daypct.sugar);
-                chartData.push( daypct.calories);
-                $scope.chartdata = chartData.toString();
-            },
+        switch (chartType) {
+            case 'DAY' :
+                num = $stateParams.num ? $stateParams.num : new Date().getDate();
+                break;
+            case 'MONTH' :
+                num = $stateParams.num ? $stateParams.num : new Date().getMonth;
+                break;
+            default:
+                num = $stateParams.num ? $stateParams.num : new Date().getDate();
+                break;
+        }
 
-            // Error function
-            function(reject) {
-                $scope.chartdata = "";
-                // Handle error
-            });*/
+        var initData = function() {
+            EntryService.getData(chartType,num).then(
+                function(result) {
+                    console.log(result);
+                    $scope.data.data = ChartService.toChartData(chartType, result.record).data;
+                },
+                function(reject) {
+                    //AuthService.clearActiveUser();
+                    //$http.defaults.headers.common['X-DreamFactory-Session-Token'] = ""
+                }
+            );
+        }; //fluser@spieleware.com
+
+        initData();
     })
 
-.controller('NewEntryController', function($scope,AuthService,EntryService,$state) { // $state,EntryService, DreamFactory) {
+    .controller('NewEntryController', ["$scope","AuthService","EntryService","$state", function($scope,AuthService,EntryService,$state) { // $state,EntryService, DreamFactory) {
 
         $scope.entry = {};
         var daypct = {};
@@ -139,7 +154,7 @@ angular.module('foodlogapp.controllers', [])
                 // Success function
                 function(result) {
                     console.log("created id " +result.id );
-                    $state.go('tab.day');
+                    $state.go('tab.chart',{chartType:'DAY'});
                 },
 
                 // Error function
@@ -148,8 +163,5 @@ angular.module('foodlogapp.controllers', [])
                 }
             )
         }
-})
-
-
-
+    }]);
 

@@ -1,25 +1,25 @@
 angular.module('foodlogapp.controllers', [])
 
-.controller('SplashController',["$scope","$state", function($scope, $state) {
-        // catch ready message
-        /*$scope.init = function () {
-            if (DreamFactory.isReady()) {
+.controller('SplashController',["$scope","$state","DreamFactory","$timeout", function($scope, $state,DreamFactory,$timeout) {
+        var tCount = 0;
+        $scope.initFail = false;
 
-                $scope.$broadcast('api:ready');
+        // Dreamfactory gets 5secs to return ready
+        var init = function() {
+            while (tCount < 4) {
+                $timeout(function () {
+                    if (DreamFactory.isReady()) {
+                        //console.log("ready");
+                        $state.go('login');
+                    }
+                }, 1000);
+                //console.log("not ready");
+                tCount++;
             }
+            $scope.initFail = true;
         };
 
-        $scope.$on('api:ready', function() {
-            $state.go('login');  // should add cordova ready message too, and maybe later
-                                 //  a check for already logged in
-        });
-        */
-
-        $scope.$on('api:ready', function() {
-            $state.go('login');  // should add cordova ready message too, and maybe later
-            //  a check for already logged in
-        });
-
+        init();
 
 }])
 

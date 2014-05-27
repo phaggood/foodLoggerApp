@@ -26,7 +26,8 @@ angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlo
             // splash page
             .state('splash', {
                 url: "/splash",
-                templateUrl: "templates/splash.html"
+                templateUrl: "templates/splash.html",
+                controller: 'SplashController'
             })
 
             // authenticate user to app

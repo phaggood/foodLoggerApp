@@ -38,6 +38,12 @@ angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlo
                 templateUrl: "templates/login.html",
                 controller: 'AuthCtrl'
             })
+
+            .state('logout', {
+                url: "/logout",
+                templateUrl: "templates/logout.html",
+                controller: 'LogoutCtrl'
+            })
             // tab pages
 
             // setup an abstract state for the tabs directive
@@ -47,11 +53,21 @@ angular.module('foodlogapp', ['ionic','angularCharts', 'ngDreamFactory', 'foodlo
                 templateUrl: "templates/tabs.html"
             })
 
-            .state('tab.chart', {
+            .state('tab.daychart', {
                 url: '/chart/:chartType/:num',
                 views: {
                     'chart-tab': {
                         templateUrl: 'templates/day.html',
+                        controller: "ChartController"
+                    }
+                }
+            })
+
+            .state('tab.monthchart', {
+                url: '/chart/:chartType/:num',
+                views: {
+                    'chart-tab': {
+                        templateUrl: 'templates/month.html',
                         controller: "ChartController"
                     }
                 }

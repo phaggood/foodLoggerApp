@@ -9,8 +9,10 @@ angular.module('foodlogapp.controllers', [])
             while (tCount < 4) {
                 $timeout(function () {
                     if (DreamFactory.isReady()) {
-                        //console.log("ready");
-                        $state.go('login');
+                        // Make sure you see the splash screen for at least 2 secs
+                        if (tCount > 2) {
+                            $state.go('login');
+                        }
                     }
                 }, 1000);
                 //console.log("not ready");
@@ -22,6 +24,20 @@ angular.module('foodlogapp.controllers', [])
         init();
 
     }])
+
+    .controller('LogoutCtrl', function($scope, AuthService, $state ) {
+
+        $scope.logout = function(){
+            AuthService.logout();
+            $state.go('login');
+        };
+
+        $scope.cancelLogout = function() {
+            $state.go('tab.daychart',{chartType:"DAY"});;
+        }
+
+
+    })
 
     .controller('AuthCtrl', function($scope, AuthService, $state, $http ){
 
@@ -36,7 +52,7 @@ angular.module('foodlogapp.controllers', [])
                 function(result) {
                     $http.defaults.headers.common['X-DreamFactory-Session-Token'] = result.session_id;
                     AuthService.initActiveUser(result);
-                    $state.go('tab.chart',{chartType:"DAY"});
+                    $state.go('tab.daychart',{chartType:"DAY"});
                 },
                 function(reject) {
                     AuthService.clearActiveUser();
@@ -53,30 +69,6 @@ angular.module('foodlogapp.controllers', [])
     })
 
     .controller('ChartController', function($scope, AuthService, EntryService,ChartService,$stateParams) {
-        // d3 data object
-        /*$scope.config = {
-            title: 'Daily',
-            tooltips: true,
-            labels: false,
-            mouseover: function() {},
-            mouseout: function() {},
-            click: function() {},
-            legend: {
-                display: true,
-                //could be 'left, right'
-                position: 'right'
-            }
-        };
-
-        $scope.data = {
-            series: ['Salt', 'Sugar', 'Calories', 'Carbs'],
-            data: [{
-                x: "Today",
-                y: [30, 60,97,44 ],
-                tooltip: "this is tooltip"
-            }]
-        };
-             */
 
         $scope.config = {
             title: 'Percent of RDA',
@@ -154,7 +146,7 @@ angular.module('foodlogapp.controllers', [])
                 // Success function
                 function(result) {
                     console.log("created id " +result.id );
-                    $state.go('tab.chart',{chartType:'DAY'});
+                    $state.go('tab.daychart',{chartType:'DAY'});
                 },
 
                 // Error function

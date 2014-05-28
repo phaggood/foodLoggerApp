@@ -7,6 +7,12 @@ angular.module('foodlogapp.services', [])
         activeUser.userId = -1;
         activeUser.name = "";
 
+        var resetActiveUser = function() {
+            activeUser.sessionId = "";
+            activeUser.userId = -1;
+            activeUser.name = "";
+        };
+
         return {
 
             initActiveUser :  function(usr) {
@@ -17,9 +23,8 @@ angular.module('foodlogapp.services', [])
             },
 
             clearActiveUser: function() {
-                activeUser.sessionId = "";
-                activeUser.userId = -1;
-                activeUser.name = "";
+                resetActiveUser();
+
             },
 
             getActiveUser : function() {
@@ -48,7 +53,7 @@ angular.module('foodlogapp.services', [])
 
             // fluser@spieleware.com
             logout: function() {
-                clearActiveUser();
+                resetActiveUser();
                 DreamFactory.api.user.logout();
                 $http.defaults.headers.common['X-DreamFactory-Session-Token'] = "";
             }
@@ -82,7 +87,7 @@ angular.module('foodlogapp.services', [])
                 var filter = getFilter(chartType, num);
                 var deferred = $q.defer();
                 var request = {
-                    table_name: 'foodlogentries',
+                    table_name: "foodlogentries",
                     filter: filter
                 };
                 DreamFactory.api.db.getRecords(request,
@@ -113,7 +118,7 @@ angular.module('foodlogapp.services', [])
                 };
 
                 var request = {
-                    table_name: 'foodlogentries',
+                    table_name: "foodlogentries",
                     body: entry
                 };
 

@@ -1,11 +1,20 @@
 <ion-view title="{{currentUser}}">
     <ion-content padding="true">
-        <div
-                data-ac-chart="'bar'"
-                data-ac-data="data"
-                data-ac-config="config"
-                class="chart">
+        <div class="card">
+            <div class="item item-divider">
+                Day Chart
+            </div>
+            <div class="item">
+                <div
+                        data-ac-chart="'bar'"
+                        data-ac-data="data"
+                        data-ac-config="config"
+                        class="chart">
+                </div>
+            </div>
+            <div class="item item-divider">
+                <a ui-sref="chart/DAY">Day</a>
+            </div>
         </div>
-        <a ui-sref="chart/DAY">DAY</a>
     </ion-content>
 </ion-view>

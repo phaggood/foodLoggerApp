@@ -1,13 +1,21 @@
 <ion-view title="FoodLogger">
     <ion-content padding="true">
-        <img src="img/nutrition.jpg">
-        <div ng-show="initFail">
+        <div class="list card">
+
+            <div class="item item-avatar">
+                <h2>Food Logger</h2>
+            </div>
+
+            <div class="item item-image">
+                <img src="img/nutrition.jpg">
+            </div>
+
+            <div ng-show="initFail">
+                <p><a ui-sref="login">Go</a></p>
+            </div>
             <p>
-                <a ui-sref="login">Go</a>
+                (c) 2014 Spieleware
             </p>
         </div>
-        <p>
-            (c) 2014 Spieleware
-        </p>
     </ion-content>
 </ion-view>

@@ -1,12 +1,20 @@
 <ion-view title="{{currentUser}}">
-    <h2>daychart</h2>
     <ion-content padding="true">
-        <div
-                data-ac-chart="'bar'"
-                data-ac-data="data"
-                data-ac-config="config"
-                class="chart">
+    <div class="card">
+        <div class="item item-divider">
+            Day Chart
         </div>
-        <a ui-sref="chart/MONTH">Month</a>
-    </ion-content>
+        <div class="item">
+            <div
+                    data-ac-chart="'bar'"
+                    data-ac-data="data"
+                    data-ac-config="config"
+                    class="chart">
+            </div>
+        </div>
+        <div class="item item-divider">
+            <a ui-sref="tab.chart.month">Month</a>
+        </div>
+    </div>
+</ion-content>
 </ion-view>
